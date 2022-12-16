@@ -2,5 +2,6 @@
 	"cSpell.words": [
 		"nestjs"
 	],
-	"material-icon-theme.activeIconPack": "nest"
+	"material-icon-theme.activeIconPack": "nest",
+	"editor.formatOnSave": true
 }
