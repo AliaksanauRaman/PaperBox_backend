@@ -6,7 +6,7 @@ import {
 } from '../shared/dependencies/help-offers-db-service';
 
 import { HelpOfferFullPreviewType } from '../shared/types/help-offer-full-preview.type';
-import { HelpOfferFactory } from './../shared/factories/help-offer.factoty';
+import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
 
 @Injectable()
 export class HelpOffersService {

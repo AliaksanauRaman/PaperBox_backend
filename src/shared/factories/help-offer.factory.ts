@@ -1,6 +1,6 @@
-import { DateRangeType } from './../types/date-range.type';
-import { SpecificDateType } from './../types/specific-date.type';
-import { HelpOfferStatus } from './../enums/help-offer-status.enum';
+import { DateRangeType } from '../types/date-range.type';
+import { SpecificDateType } from '../types/specific-date.type';
+import { HelpOfferStatus } from '../enums/help-offer-status.enum';
 import { HelpOfferDbRecordType } from '../types/help-offer-db-record.type';
 import { PhoneType } from '../types/phone.type';
 import { HelpOfferFullPreviewType } from '../types/help-offer-full-preview.type';
