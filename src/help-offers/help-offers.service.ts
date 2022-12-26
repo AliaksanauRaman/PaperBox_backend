@@ -6,6 +6,7 @@ import {
 } from '../shared/dependencies/help-offers-db-service';
 
 import { HelpOfferFullPreviewType } from '../shared/types/help-offer-full-preview.type';
+import { HelpOfferPublicPreviewType } from '../shared/types/help-offer-public-preview.type';
 import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
 
 @Injectable()
@@ -22,5 +23,15 @@ export class HelpOffersService {
     return allHelpOffersDbRecords
       .map((dbRecord) => new HelpOfferFactory(dbRecord))
       .map((factory) => factory.buildFullPreview());
+  }
+
+  public async getPublicPreviewsOfPublished(): Promise<
+    Array<HelpOfferPublicPreviewType>
+  > {
+    const publishedHelpOffersDbRecords =
+      await this.helpOffersDbService.getAllPublished();
+    return publishedHelpOffersDbRecords
+      .map((dbRecord) => new HelpOfferFactory(dbRecord))
+      .map((factory) => factory.buildPublicPreview());
   }
 }
