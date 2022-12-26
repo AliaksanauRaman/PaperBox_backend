@@ -4,7 +4,7 @@ import { HelpOfferStatus } from './../enums/help-offer-status.enum';
 import { HelpOfferDbRecordType } from '../types/help-offer-db-record.type';
 import { PhoneType } from '../types/phone.type';
 import { HelpOfferFullPreviewType } from '../types/help-offer-full-preview.type';
-import { PublishedHelpOfferPreviewType } from '../types/published-help-offer-preview.type';
+import { HelpOfferPublicPreviewType } from '../types/help-offer-public-preview.type';
 
 export class HelpOfferFactory {
   private readonly id: string;
@@ -48,7 +48,7 @@ export class HelpOfferFactory {
     };
   }
 
-  public buildPreviewOfPublished(): PublishedHelpOfferPreviewType {
+  public buildPublicPreview(): HelpOfferPublicPreviewType {
     return {
       id: this.id,
       authorFullName: this.authorFullName,

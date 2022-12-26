@@ -1,6 +1,6 @@
 import { HelpOfferDbRecordType } from './help-offer-db-record.type';
 
-export type PublishedHelpOfferPreviewType = { readonly id: string } & Omit<
+export type HelpOfferPublicPreviewType = { readonly id: string } & Omit<
   HelpOfferDbRecordType,
   | '_id'
   | 'phones'
