@@ -7,7 +7,7 @@ export class HelpOffersController {
   constructor(private readonly helpOffersService: HelpOffersService) {}
 
   @Get('/all-previews')
-  public getAllPreviews(): Array<unknown> {
+  public async getAllPreviews(): Promise<Array<unknown>> {
     return this.helpOffersService.getAllPreviews();
   }
 }
