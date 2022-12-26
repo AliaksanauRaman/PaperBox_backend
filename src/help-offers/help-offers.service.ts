@@ -5,6 +5,9 @@ import {
   HelpOffersDbService,
 } from '../shared/dependencies/help-offers-db-service';
 
+import { HelpOfferFullPreviewType } from '../shared/types/help-offer-full-preview.type';
+import { HelpOfferFactory } from './../shared/factories/help-offer.factoty';
+
 @Injectable()
 export class HelpOffersService {
   constructor(
@@ -12,9 +15,12 @@ export class HelpOffersService {
     private readonly helpOffersDbService: HelpOffersDbService,
   ) {}
 
-  public async getAllPreviews(): Promise<Array<unknown>> {
-    const all = await this.helpOffersDbService.getAll();
-
-    return all;
+  public async getFullPreviewsOfAll(): Promise<
+    Array<HelpOfferFullPreviewType>
+  > {
+    const allHelpOffersDbRecords = await this.helpOffersDbService.getAll();
+    return allHelpOffersDbRecords
+      .map((dbRecord) => new HelpOfferFactory(dbRecord))
+      .map((factory) => factory.buildFullPreview());
   }
 }

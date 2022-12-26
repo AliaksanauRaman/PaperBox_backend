@@ -6,8 +6,8 @@ import { HelpOffersService } from './help-offers.service';
 export class HelpOffersController {
   constructor(private readonly helpOffersService: HelpOffersService) {}
 
-  @Get('/all-previews')
-  public async getAllPreviews(): Promise<Array<unknown>> {
-    return this.helpOffersService.getAllPreviews();
+  @Get('/full-previews-of-all')
+  public async getFullPreviewsOfAll(): Promise<Array<unknown>> {
+    return this.helpOffersService.getFullPreviewsOfAll();
   }
 }
