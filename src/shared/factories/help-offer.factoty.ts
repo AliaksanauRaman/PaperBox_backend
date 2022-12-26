@@ -3,7 +3,7 @@ import { SpecificDateType } from './../types/specific-date.type';
 import { HelpOfferStatus } from './../enums/help-offer-status.enum';
 import { HelpOfferDbRecordType } from '../types/help-offer-db-record.type';
 import { PhoneType } from '../types/phone.type';
-import { HelpOfferPreviewType } from '../types/help-offer-preview.type';
+import { HelpOfferFullPreviewType } from '../types/help-offer-full-preview.type';
 import { PublishedHelpOfferPreviewType } from '../types/published-help-offer-preview.type';
 
 export class HelpOfferFactory {
@@ -35,7 +35,7 @@ export class HelpOfferFactory {
     this.comment = helpOfferDbRecordType.comment;
   }
 
-  public buildPreview(): HelpOfferPreviewType {
+  public buildFullPreview(): HelpOfferFullPreviewType {
     return {
       id: this.id,
       authorFullName: this.authorFullName,
