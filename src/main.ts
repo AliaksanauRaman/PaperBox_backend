@@ -15,6 +15,8 @@ async function bootstrap() {
     ? parseInt(portFromEnvironment)
     : DEFAULT_PORT;
 
+  app.enableCors();
+
   await app.listen(finalPort);
 
   logger.log('Server is started.');
