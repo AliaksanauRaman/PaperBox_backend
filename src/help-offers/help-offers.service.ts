@@ -8,6 +8,7 @@ import {
 import { HelpOfferFullPreviewType } from '../shared/types/help-offer-full-preview.type';
 import { HelpOfferPublicPreviewType } from '../shared/types/help-offer-public-preview.type';
 import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
+import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 
 @Injectable()
 export class HelpOffersService {
@@ -33,5 +34,14 @@ export class HelpOffersService {
     return publishedHelpOffersDbRecords
       .map((dbRecord) => new HelpOfferFactory(dbRecord))
       .map((factory) => factory.buildPublicPreview());
+  }
+
+  public async createOneUnpublished(
+    createHelpOfferDto: CreateHelpOfferDto,
+  ): Promise<HelpOfferPublicPreviewType> {
+    const newHelpOfferDbRecord =
+      await this.helpOffersDbService.createOneUnpublished(createHelpOfferDto);
+    const factory = new HelpOfferFactory(newHelpOfferDbRecord);
+    return factory.buildPublicPreview();
   }
 }
