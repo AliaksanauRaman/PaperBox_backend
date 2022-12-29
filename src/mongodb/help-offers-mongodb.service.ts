@@ -49,6 +49,7 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferDbRecordType> {
     const helpOfferId = this.uniqueIdGeneratorService.generate();
+    const now = new Date();
     const helpOfferDbRecord: HelpOfferDbRecordType = {
       _id: helpOfferId,
       authorFullName: createHelpOfferDto.authorFullName,
@@ -59,8 +60,8 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
       status: HelpOfferStatus.UNPUBLISHED,
       phones: createHelpOfferDto.phones,
       date: createHelpOfferDto.date,
-      createdAt: new Date(),
-      lastModified: new Date(),
+      createdAt: now,
+      lastModified: now,
       comment: createHelpOfferDto.comment,
     };
     await this.helpOffersCollection.insertOne(helpOfferDbRecord);
