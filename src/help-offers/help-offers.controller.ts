@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
 import { HelpOffersService } from './help-offers.service';
 
 import { HelpOfferFullPreviewType } from './../shared/types/help-offer-full-preview.type';
 import { HelpOfferPublicPreviewType } from './../shared/types/help-offer-public-preview.type';
+import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 
 @Controller('help-offers')
 export class HelpOffersController {
@@ -21,5 +22,12 @@ export class HelpOffersController {
     Array<HelpOfferPublicPreviewType>
   > {
     return this.helpOffersService.getPublicPreviewsOfPublished();
+  }
+
+  @Post('/create-one-unpublished')
+  public async createOneUnpublished(
+    @Body() createHelpOfferDto: CreateHelpOfferDto,
+  ): Promise<HelpOfferPublicPreviewType> {
+    return this.helpOffersService.createOneUnpublished(createHelpOfferDto);
   }
 }
