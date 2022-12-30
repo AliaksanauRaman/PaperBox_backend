@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { Db, UpdateResult } from 'mongodb';
 
 import { DB_INSTANCE } from './dependencies/db-instance';
@@ -42,6 +42,13 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     const helpOfferDbRecord = await this.helpOffersCollection.findOne({
       _id: helpOfferId,
     });
+
+    if (helpOfferDbRecord === null) {
+      throw new NotFoundException(
+        `Help offer with id '${helpOfferId}' is not found!`,
+      );
+    }
+
     return helpOfferDbRecord;
   }
 
