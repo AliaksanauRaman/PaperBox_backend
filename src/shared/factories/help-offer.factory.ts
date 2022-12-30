@@ -5,6 +5,7 @@ import { HelpOfferDbRecordType } from '../types/help-offer-db-record.type';
 import { PhoneType } from '../types/phone.type';
 import { HelpOfferFullPreviewType } from '../types/help-offer-full-preview.type';
 import { HelpOfferPublicPreviewType } from '../types/help-offer-public-preview.type';
+import { FullHelpOfferType } from './../types/full-help-offer.type';
 
 export class HelpOfferFactory {
   private readonly id: string;
@@ -55,6 +56,23 @@ export class HelpOfferFactory {
       countryFrom: this.countryFrom,
       countryTo: this.countryTo,
       date: this.date,
+    };
+  }
+
+  public buildFull(): FullHelpOfferType {
+    return {
+      id: this.id,
+      authorFullName: this.authorFullName,
+      countryFrom: this.countryFrom,
+      cityFrom: this.cityFrom,
+      countryTo: this.countryTo,
+      cityTo: this.cityTo,
+      status: this.status,
+      phones: this.phones,
+      date: this.date,
+      createdAt: this.createdAt,
+      lastModified: this.lastModified,
+      comment: this.comment,
     };
   }
 }
