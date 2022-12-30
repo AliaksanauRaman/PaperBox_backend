@@ -8,7 +8,8 @@ import {
 import { HelpOfferFullPreviewType } from '../shared/types/help-offer-full-preview.type';
 import { HelpOfferPublicPreviewType } from '../shared/types/help-offer-public-preview.type';
 import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
-import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
+import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
+import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 
 @Injectable()
 export class HelpOffersService {
@@ -43,5 +44,13 @@ export class HelpOffersService {
       await this.helpOffersDbService.createOneUnpublished(createHelpOfferDto);
     const factory = new HelpOfferFactory(newHelpOfferDbRecord);
     return factory.buildPublicPreview();
+  }
+
+  public async getOneFullById(helpOfferId: string): Promise<FullHelpOfferType> {
+    const helpOfferDbRecord = await this.helpOffersDbService.getOneById(
+      helpOfferId,
+    );
+    const factory = new HelpOfferFactory(helpOfferDbRecord);
+    return factory.buildFull();
   }
 }
