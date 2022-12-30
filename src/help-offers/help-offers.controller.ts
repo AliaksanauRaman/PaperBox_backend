@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 
 import { HelpOffersService } from './help-offers.service';
 
 import { HelpOfferFullPreviewType } from './../shared/types/help-offer-full-preview.type';
 import { HelpOfferPublicPreviewType } from './../shared/types/help-offer-public-preview.type';
 import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
+import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 
 @Controller('help-offers')
 export class HelpOffersController {
@@ -29,5 +30,12 @@ export class HelpOffersController {
     @Body() createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferPublicPreviewType> {
     return this.helpOffersService.createOneUnpublished(createHelpOfferDto);
+  }
+
+  @Get('/full/:helpOfferId')
+  public async getOneFullById(
+    @Param('helpOfferId') helpOfferId: string,
+  ): Promise<FullHelpOfferType> {
+    return this.helpOffersService.getOneFullById(helpOfferId);
   }
 }
