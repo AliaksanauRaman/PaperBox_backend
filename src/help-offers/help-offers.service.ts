@@ -10,6 +10,8 @@ import { HelpOfferPublicPreviewType } from '../shared/types/help-offer-public-pr
 import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
+import { UpdatedHelpOfferResponseType } from '../shared/types/updated-help-offer-response.type';
+import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 
 @Injectable()
 export class HelpOffersService {
@@ -52,5 +54,12 @@ export class HelpOffersService {
     );
     const factory = new HelpOfferFactory(helpOfferDbRecord);
     return factory.buildFull();
+  }
+
+  public async publishOneWithId(
+    helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    await this.helpOffersDbService.publishOne(helpOfferId);
+    return { id: helpOfferId, newStatus: HelpOfferStatus.PUBLISHED };
   }
 }
