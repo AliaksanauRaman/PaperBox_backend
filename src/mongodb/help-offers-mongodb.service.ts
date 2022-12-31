@@ -8,7 +8,7 @@ import { UniqueIdGeneratorService } from './../shared/services/unique-id-generat
 import { HelpOfferDbRecordType } from '../shared/types/help-offer-db-record.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
-import { UpdatedHelpOfferResponseType } from './../shared/types/updated-help-offer-response.type';
+import { UpdatedHelpOfferDbResponseType } from './../shared/types/updated-help-offer-db-response.type';
 
 const HELP_OFFERS_COLLECTION_NAME = 'help-offers';
 
@@ -77,21 +77,21 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
 
   public async publishOne(
     helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
+  ): Promise<UpdatedHelpOfferDbResponseType> {
     await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.PUBLISHED);
     return { id: helpOfferId };
   }
 
   public async unpublishOne(
     helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
+  ): Promise<UpdatedHelpOfferDbResponseType> {
     await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.UNPUBLISHED);
     return { id: helpOfferId };
   }
 
   public async rejectOne(
     helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
+  ): Promise<UpdatedHelpOfferDbResponseType> {
     await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.REJECTED);
     return { id: helpOfferId };
   }
@@ -107,6 +107,13 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
         $currentDate: { lastModified: true },
       },
     );
+
+    if (updateResult.matchedCount === 0) {
+      throw new NotFoundException(
+        `Help offer with id '${helpOfferId}' is not found!`,
+      );
+    }
+
     return updateResult;
   }
 }
