@@ -62,4 +62,18 @@ export class HelpOffersService {
     await this.helpOffersDbService.publishOne(helpOfferId);
     return { id: helpOfferId, newStatus: HelpOfferStatus.PUBLISHED };
   }
+
+  public async unpublishOneWithId(
+    helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    await this.helpOffersDbService.unpublishOne(helpOfferId);
+    return { id: helpOfferId, newStatus: HelpOfferStatus.UNPUBLISHED };
+  }
+
+  public async rejectOneWithId(
+    helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    await this.helpOffersDbService.rejectOne(helpOfferId);
+    return { id: helpOfferId, newStatus: HelpOfferStatus.REJECTED };
+  }
 }
