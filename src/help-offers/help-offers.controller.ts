@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Patch } from '@nestjs/common';
 
 import { HelpOffersService } from './help-offers.service';
 
@@ -6,6 +6,7 @@ import { HelpOfferFullPreviewType } from './../shared/types/help-offer-full-prev
 import { HelpOfferPublicPreviewType } from './../shared/types/help-offer-public-preview.type';
 import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
+import { UpdatedHelpOfferResponseType } from '../shared/types/updated-help-offer-response.type';
 
 @Controller('help-offers')
 export class HelpOffersController {
@@ -37,5 +38,12 @@ export class HelpOffersController {
     @Param('helpOfferId') helpOfferId: string,
   ): Promise<FullHelpOfferType> {
     return this.helpOffersService.getOneFullById(helpOfferId);
+  }
+
+  @Patch('/publish-one/:helpOfferId')
+  public async publishOneWithId(
+    @Param('helpOfferId') helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    return this.helpOffersService.publishOneWithId(helpOfferId);
   }
 }
