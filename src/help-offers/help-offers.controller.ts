@@ -46,4 +46,18 @@ export class HelpOffersController {
   ): Promise<UpdatedHelpOfferResponseType> {
     return this.helpOffersService.publishOneWithId(helpOfferId);
   }
+
+  @Patch('/unpublish-one/:helpOfferId')
+  public async unpublishOneWithId(
+    @Param('helpOfferId') helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    return this.helpOffersService.unpublishOneWithId(helpOfferId);
+  }
+
+  @Patch('/reject-one/:helpOfferId')
+  public async rejectOneWithId(
+    @Param('helpOfferId') helpOfferId: string,
+  ): Promise<UpdatedHelpOfferResponseType> {
+    return this.helpOffersService.rejectOneWithId(helpOfferId);
+  }
 }
