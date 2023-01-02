@@ -1,6 +1,6 @@
 import { HelpOfferStatus } from '../enums/help-offer-status.enum';
 
-export type UpdatedHelpOfferResponseType = Readonly<{
+export type UpdatedHelpOfferStatusResponse = Readonly<{
   id: string;
   newStatus: HelpOfferStatus;
 }>;
