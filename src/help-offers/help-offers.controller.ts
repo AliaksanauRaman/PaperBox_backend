@@ -6,7 +6,8 @@ import { HelpOfferFullPreviewType } from './../shared/types/help-offer-full-prev
 import { HelpOfferPublicPreviewType } from './../shared/types/help-offer-public-preview.type';
 import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
-import { UpdatedHelpOfferResponseType } from '../shared/types/updated-help-offer-response.type';
+import { UpdateHelpOfferDto } from '../shared/dtos/update-help-offer-status.dto';
+import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
 
 @Controller('help-offers')
 export class HelpOffersController {
@@ -40,24 +41,14 @@ export class HelpOffersController {
     return this.helpOffersService.getOneFullById(helpOfferId);
   }
 
-  @Patch('/publish-one/:helpOfferId')
+  @Patch('/update-status-of-one/:helpOfferId')
   public async publishOneWithId(
     @Param('helpOfferId') helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    return this.helpOffersService.publishOneWithId(helpOfferId);
-  }
-
-  @Patch('/unpublish-one/:helpOfferId')
-  public async unpublishOneWithId(
-    @Param('helpOfferId') helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    return this.helpOffersService.unpublishOneWithId(helpOfferId);
-  }
-
-  @Patch('/reject-one/:helpOfferId')
-  public async rejectOneWithId(
-    @Param('helpOfferId') helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    return this.helpOffersService.rejectOneWithId(helpOfferId);
+    @Body() updateHelpOfferDto: UpdateHelpOfferDto,
+  ): Promise<UpdatedHelpOfferStatusResponse> {
+    return this.helpOffersService.updateStatusOfOneWithId(
+      helpOfferId,
+      updateHelpOfferDto.newStatus,
+    );
   }
 }

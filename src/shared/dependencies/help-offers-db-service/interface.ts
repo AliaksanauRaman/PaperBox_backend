@@ -1,6 +1,7 @@
-import { UpdatedHelpOfferDbResponseType } from './../../types/updated-help-offer-db-response.type';
-import { CreateHelpOfferDto } from './../../dtos/create-help-offer.dto';
+import { CreateHelpOfferDto } from '../../dtos/create-help-offer.dto';
 import { HelpOfferDbRecordType } from '../../types/help-offer-db-record.type';
+import { UpdatedHelpOfferStatusResponse } from '../../types/updated-help-offer-status-response.type';
+import { HelpOfferStatus } from '../../enums/help-offer-status.enum';
 
 export interface HelpOffersDbService {
   getAll(): Promise<Array<HelpOfferDbRecordType>>;
@@ -9,7 +10,8 @@ export interface HelpOffersDbService {
   createOneUnpublished(
     createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferDbRecordType>;
-  publishOne(helpOfferId: string): Promise<UpdatedHelpOfferDbResponseType>;
-  unpublishOne(helpOfferId: string): Promise<UpdatedHelpOfferDbResponseType>;
-  rejectOne(helpOfferId: string): Promise<UpdatedHelpOfferDbResponseType>;
+  updateStatusOfOneWithId(
+    helpOfferId: string,
+    newStatus: HelpOfferStatus,
+  ): Promise<UpdatedHelpOfferStatusResponse>;
 }

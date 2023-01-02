@@ -10,8 +10,8 @@ import { HelpOfferPublicPreviewType } from '../shared/types/help-offer-public-pr
 import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
-import { UpdatedHelpOfferResponseType } from '../shared/types/updated-help-offer-response.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
+import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
 
 @Injectable()
 export class HelpOffersService {
@@ -56,24 +56,13 @@ export class HelpOffersService {
     return factory.buildFull();
   }
 
-  public async publishOneWithId(
+  public async updateStatusOfOneWithId(
     helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    await this.helpOffersDbService.publishOne(helpOfferId);
-    return { id: helpOfferId, newStatus: HelpOfferStatus.PUBLISHED };
-  }
-
-  public async unpublishOneWithId(
-    helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    await this.helpOffersDbService.unpublishOne(helpOfferId);
-    return { id: helpOfferId, newStatus: HelpOfferStatus.UNPUBLISHED };
-  }
-
-  public async rejectOneWithId(
-    helpOfferId: string,
-  ): Promise<UpdatedHelpOfferResponseType> {
-    await this.helpOffersDbService.rejectOne(helpOfferId);
-    return { id: helpOfferId, newStatus: HelpOfferStatus.REJECTED };
+    newStatus: HelpOfferStatus,
+  ): Promise<UpdatedHelpOfferStatusResponse> {
+    return this.helpOffersDbService.updateStatusOfOneWithId(
+      helpOfferId,
+      newStatus,
+    );
   }
 }

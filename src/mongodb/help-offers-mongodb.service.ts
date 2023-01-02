@@ -1,14 +1,14 @@
 import { Injectable, Inject, NotFoundException } from '@nestjs/common';
-import { Db, UpdateResult } from 'mongodb';
+import { Db } from 'mongodb';
 
 import { DB_INSTANCE } from './dependencies/db-instance';
 
 import { HelpOffersDbService } from '../shared/dependencies/help-offers-db-service';
-import { UniqueIdGeneratorService } from './../shared/services/unique-id-generator.service';
+import { UniqueIdGeneratorService } from '../shared/services/unique-id-generator.service';
 import { HelpOfferDbRecordType } from '../shared/types/help-offer-db-record.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
-import { UpdatedHelpOfferDbResponseType } from './../shared/types/updated-help-offer-db-response.type';
+import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
 
 const HELP_OFFERS_COLLECTION_NAME = 'help-offers';
 
@@ -75,35 +75,14 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     return helpOfferDbRecord;
   }
 
-  public async publishOne(
+  public async updateStatusOfOneWithId(
     helpOfferId: string,
-  ): Promise<UpdatedHelpOfferDbResponseType> {
-    await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.PUBLISHED);
-    return { id: helpOfferId };
-  }
-
-  public async unpublishOne(
-    helpOfferId: string,
-  ): Promise<UpdatedHelpOfferDbResponseType> {
-    await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.UNPUBLISHED);
-    return { id: helpOfferId };
-  }
-
-  public async rejectOne(
-    helpOfferId: string,
-  ): Promise<UpdatedHelpOfferDbResponseType> {
-    await this.updateHelpOfferStatus(helpOfferId, HelpOfferStatus.REJECTED);
-    return { id: helpOfferId };
-  }
-
-  private async updateHelpOfferStatus(
-    helpOfferId: string,
-    status: HelpOfferStatus,
-  ): Promise<UpdateResult> {
+    newStatus: HelpOfferStatus,
+  ): Promise<UpdatedHelpOfferStatusResponse> {
     const updateResult = await this.helpOffersCollection.updateOne(
       { _id: helpOfferId },
       {
-        $set: { status },
+        $set: { status: newStatus },
         $currentDate: { lastModified: true },
       },
     );
@@ -114,6 +93,6 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
       );
     }
 
-    return updateResult;
+    return { id: helpOfferId, newStatus };
   }
 }
