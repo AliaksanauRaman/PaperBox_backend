@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Param, Patch } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Patch,
+  Delete,
+} from '@nestjs/common';
 
 import { HelpOffersService } from './help-offers.service';
 
@@ -8,6 +16,7 @@ import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 import { UpdateHelpOfferDto } from '../shared/dtos/update-help-offer-status.dto';
 import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 @Controller('help-offers')
 export class HelpOffersController {
@@ -27,22 +36,22 @@ export class HelpOffersController {
     return this.helpOffersService.getPublicPreviewsOfPublished();
   }
 
-  @Post('/create-one-unpublished')
+  @Post('/one-unpublished')
   public async createOneUnpublished(
     @Body() createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferPublicPreviewType> {
     return this.helpOffersService.createOneUnpublished(createHelpOfferDto);
   }
 
-  @Get('/full/:helpOfferId')
-  public async getOneFullById(
+  @Get('/one-full/:helpOfferId')
+  public async getOneFull(
     @Param('helpOfferId') helpOfferId: string,
   ): Promise<FullHelpOfferType> {
     return this.helpOffersService.getOneFullById(helpOfferId);
   }
 
-  @Patch('/update-status-of-one/:helpOfferId')
-  public async publishOneWithId(
+  @Patch('/status-of-one/:helpOfferId')
+  public async updateStatusOfOne(
     @Param('helpOfferId') helpOfferId: string,
     @Body() updateHelpOfferDto: UpdateHelpOfferDto,
   ): Promise<UpdatedHelpOfferStatusResponse> {
@@ -50,5 +59,12 @@ export class HelpOffersController {
       helpOfferId,
       updateHelpOfferDto.newStatus,
     );
+  }
+
+  @Delete('/one/:helpOfferId')
+  public async deleteOne(
+    @Param('helpOfferId') helpOfferId: string,
+  ): Promise<DeletedHelpOfferResponseType> {
+    return this.helpOffersService.deleteOneWithId(helpOfferId);
   }
 }
