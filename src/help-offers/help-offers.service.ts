@@ -12,6 +12,7 @@ import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 @Injectable()
 export class HelpOffersService {
@@ -64,5 +65,11 @@ export class HelpOffersService {
       helpOfferId,
       newStatus,
     );
+  }
+
+  public async deleteOneWithId(
+    helpOfferId: string,
+  ): Promise<DeletedHelpOfferResponseType> {
+    return this.helpOffersDbService.archiveOneWithId(helpOfferId);
   }
 }

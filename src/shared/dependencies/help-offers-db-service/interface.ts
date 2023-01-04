@@ -2,6 +2,7 @@ import { CreateHelpOfferDto } from '../../dtos/create-help-offer.dto';
 import { HelpOfferDbRecordType } from '../../types/help-offer-db-record.type';
 import { UpdatedHelpOfferStatusResponse } from '../../types/updated-help-offer-status-response.type';
 import { HelpOfferStatus } from '../../enums/help-offer-status.enum';
+import { DeletedHelpOfferResponseType } from '../../types/deleted-help-offer-response.type';
 
 export interface HelpOffersDbService {
   getAll(): Promise<Array<HelpOfferDbRecordType>>;
@@ -14,4 +15,5 @@ export interface HelpOffersDbService {
     helpOfferId: string,
     newStatus: HelpOfferStatus,
   ): Promise<UpdatedHelpOfferStatusResponse>;
+  archiveOneWithId(helpOfferId: string): Promise<DeletedHelpOfferResponseType>;
 }

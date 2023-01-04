@@ -9,14 +9,21 @@ import { HelpOfferDbRecordType } from '../shared/types/help-offer-db-record.type
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
 import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { ArchivedHelpOfferDbRecordType } from '../shared/types/archived-help-offer-db-record.type';
+import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 const HELP_OFFERS_COLLECTION_NAME = 'help-offers';
+const HELP_OFFERS_ARCHIVE_COLLECTION_NAME = 'help-offers-archive';
 
 @Injectable()
 export class HelpOffersMongodbService implements HelpOffersDbService {
   private readonly helpOffersCollection =
     this.mongodbInstance.collection<HelpOfferDbRecordType>(
       HELP_OFFERS_COLLECTION_NAME,
+    );
+  private readonly helpOffersArchiveCollection =
+    this.mongodbInstance.collection<ArchivedHelpOfferDbRecordType>(
+      HELP_OFFERS_ARCHIVE_COLLECTION_NAME,
     );
 
   constructor(
@@ -28,11 +35,13 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
   public async getAll(): Promise<Array<HelpOfferDbRecordType>> {
     const cursor = await this.helpOffersCollection.find();
     const allHelpOffersDbRecords = await cursor.toArray();
+
     return allHelpOffersDbRecords;
   }
 
   public async getAllPublished(): Promise<Array<HelpOfferDbRecordType>> {
     const allHelpOffersDbRecords = await this.getAll();
+
     return allHelpOffersDbRecords.filter(
       ({ status }) => status === HelpOfferStatus.PUBLISHED,
     );
@@ -71,7 +80,9 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
       lastModified: now,
       comment: createHelpOfferDto.comment,
     };
+
     await this.helpOffersCollection.insertOne(helpOfferDbRecord);
+
     return helpOfferDbRecord;
   }
 
@@ -94,5 +105,20 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     }
 
     return { id: helpOfferId, newStatus };
+  }
+
+  public async archiveOneWithId(
+    helpOfferId: string,
+  ): Promise<DeletedHelpOfferResponseType> {
+    const helpOfferDbRecord = await this.getOneById(helpOfferId);
+    const now = new Date();
+
+    await this.helpOffersArchiveCollection.insertOne({
+      ...helpOfferDbRecord,
+      archivedAt: now,
+    });
+    await this.helpOffersCollection.deleteOne({ _id: helpOfferDbRecord._id });
+
+    return { id: helpOfferId };
   }
 }
