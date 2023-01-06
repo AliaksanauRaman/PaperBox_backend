@@ -5,10 +5,10 @@ import { HelpOfferStatus } from '../../enums/help-offer-status.enum';
 import { DbResultOfHelpOfferArchiveType } from '../../types/db-result-of-help-offer-archive.type';
 
 export interface HelpOffersDbService {
-  getAll(): Promise<ReadonlyArray<HelpOfferDbRecordType>>;
-  getAllPublished(): Promise<ReadonlyArray<HelpOfferDbRecordType>>;
-  getOneById(helpOfferId: string): Promise<HelpOfferDbRecordType | null>;
-  createOneUnpublished(
+  findAll(): Promise<ReadonlyArray<HelpOfferDbRecordType>>;
+  findAllPublished(): Promise<ReadonlyArray<HelpOfferDbRecordType>>;
+  findOneById(helpOfferId: string): Promise<HelpOfferDbRecordType | null>;
+  insertOneUnpublished(
     createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferDbRecordType>;
   updateStatusOfOneWithId(

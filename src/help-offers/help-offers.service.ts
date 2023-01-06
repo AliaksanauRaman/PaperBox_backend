@@ -29,7 +29,7 @@ export class HelpOffersService {
   public async getFullPreviewsOfAll(): Promise<
     Array<HelpOfferFullPreviewType>
   > {
-    const allHelpOffersDbRecords = await this.helpOffersDbService.getAll();
+    const allHelpOffersDbRecords = await this.helpOffersDbService.findAll();
     return allHelpOffersDbRecords
       .map((dbRecord) => new HelpOfferFactory(dbRecord))
       .map((factory) => factory.buildFullPreview());
@@ -39,7 +39,7 @@ export class HelpOffersService {
     Array<HelpOfferPublicPreviewType>
   > {
     const publishedHelpOffersDbRecords =
-      await this.helpOffersDbService.getAllPublished();
+      await this.helpOffersDbService.findAllPublished();
     return publishedHelpOffersDbRecords
       .map((dbRecord) => new HelpOfferFactory(dbRecord))
       .map((factory) => factory.buildPublicPreview());
@@ -49,13 +49,13 @@ export class HelpOffersService {
     createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferPublicPreviewType> {
     const newHelpOfferDbRecord =
-      await this.helpOffersDbService.createOneUnpublished(createHelpOfferDto);
+      await this.helpOffersDbService.insertOneUnpublished(createHelpOfferDto);
     const factory = new HelpOfferFactory(newHelpOfferDbRecord);
     return factory.buildPublicPreview();
   }
 
   public async getOneFullById(helpOfferId: string): Promise<FullHelpOfferType> {
-    const helpOfferDbRecordOrNull = await this.helpOffersDbService.getOneById(
+    const helpOfferDbRecordOrNull = await this.helpOffersDbService.findOneById(
       helpOfferId,
     );
 

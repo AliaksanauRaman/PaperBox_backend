@@ -32,24 +32,24 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     private readonly uniqueIdGeneratorService: UniqueIdGeneratorService,
   ) {}
 
-  public async getAll(): Promise<ReadonlyArray<HelpOfferDbRecordType>> {
+  public async findAll(): Promise<ReadonlyArray<HelpOfferDbRecordType>> {
     const cursor = await this.helpOffersCollection.find();
     const allHelpOffersDbRecords = await cursor.toArray();
 
     return allHelpOffersDbRecords;
   }
 
-  public async getAllPublished(): Promise<
+  public async findAllPublished(): Promise<
     ReadonlyArray<HelpOfferDbRecordType>
   > {
-    const allHelpOffersDbRecords = await this.getAll();
+    const allHelpOffersDbRecords = await this.findAll();
 
     return allHelpOffersDbRecords.filter(
       ({ status }) => status === HelpOfferStatus.PUBLISHED,
     );
   }
 
-  public async getOneById(
+  public async findOneById(
     helpOfferId: string,
   ): Promise<HelpOfferDbRecordType | null> {
     return this.helpOffersCollection.findOne({
@@ -57,7 +57,7 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     });
   }
 
-  public async createOneUnpublished(
+  public async insertOneUnpublished(
     createHelpOfferDto: CreateHelpOfferDto,
   ): Promise<HelpOfferDbRecordType> {
     const helpOfferId = this.uniqueIdGeneratorService.generate();
@@ -106,7 +106,7 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
   public async archiveOneWithId(
     helpOfferId: string,
   ): Promise<DbResultOfHelpOfferArchiveType> {
-    const helpOfferDbRecord = await this.getOneById(helpOfferId);
+    const helpOfferDbRecord = await this.findOneById(helpOfferId);
     const now = new Date();
     const archivedHelpOfferDbRecord = {
       ...helpOfferDbRecord,
