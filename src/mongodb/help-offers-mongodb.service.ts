@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Db } from 'mongodb';
 
 import { DB_INSTANCE } from './dependencies/db-instance';
@@ -8,14 +8,13 @@ import { UniqueIdGeneratorService } from '../shared/services/unique-id-generator
 import { HelpOfferDbRecordType } from '../shared/types/help-offer-db-record.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
-import { UpdatedHelpOfferStatusResponseType } from '../shared/types/updated-help-offer-status-response.type';
+import { DbResultOfHelpOfferStatusUpdateType } from '../shared/types/db-result-of-help-offer-status-update.type';
 import { ArchivedHelpOfferDbRecordType } from '../shared/types/archived-help-offer-db-record.type';
-import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
+import { DbResultOfHelpOfferArchiveType } from '../shared/types/db-result-of-help-offer-archive.type';
 
 const HELP_OFFERS_COLLECTION_NAME = 'help-offers';
 const HELP_OFFERS_ARCHIVE_COLLECTION_NAME = 'help-offers-archive';
 
-// TODO: Remove exceptions from here
 @Injectable()
 export class HelpOffersMongodbService implements HelpOffersDbService {
   private readonly helpOffersCollection =
@@ -33,14 +32,16 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     private readonly uniqueIdGeneratorService: UniqueIdGeneratorService,
   ) {}
 
-  public async getAll(): Promise<Array<HelpOfferDbRecordType>> {
+  public async getAll(): Promise<ReadonlyArray<HelpOfferDbRecordType>> {
     const cursor = await this.helpOffersCollection.find();
     const allHelpOffersDbRecords = await cursor.toArray();
 
     return allHelpOffersDbRecords;
   }
 
-  public async getAllPublished(): Promise<Array<HelpOfferDbRecordType>> {
+  public async getAllPublished(): Promise<
+    ReadonlyArray<HelpOfferDbRecordType>
+  > {
     const allHelpOffersDbRecords = await this.getAll();
 
     return allHelpOffersDbRecords.filter(
@@ -48,18 +49,12 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
     );
   }
 
-  public async getOneById(helpOfferId: string): Promise<HelpOfferDbRecordType> {
-    const helpOfferDbRecord = await this.helpOffersCollection.findOne({
+  public async getOneById(
+    helpOfferId: string,
+  ): Promise<HelpOfferDbRecordType | null> {
+    return this.helpOffersCollection.findOne({
       _id: helpOfferId,
     });
-
-    if (helpOfferDbRecord === null) {
-      throw new NotFoundException(
-        `Help offer with id '${helpOfferId}' is not found!`,
-      );
-    }
-
-    return helpOfferDbRecord;
   }
 
   public async createOneUnpublished(
@@ -89,37 +84,45 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
 
   public async updateStatusOfOneWithId(
     helpOfferId: string,
-    newStatus: HelpOfferStatus,
-  ): Promise<UpdatedHelpOfferStatusResponseType> {
-    const updateResult = await this.helpOffersCollection.updateOne(
-      { _id: helpOfferId },
-      {
-        $set: { status: newStatus },
-        $currentDate: { lastModified: true },
-      },
-    );
-
-    if (updateResult.matchedCount === 0) {
-      throw new NotFoundException(
-        `Help offer with id '${helpOfferId}' is not found!`,
+    status: HelpOfferStatus,
+  ): Promise<DbResultOfHelpOfferStatusUpdateType> {
+    const { matchedCount, modifiedCount } =
+      await this.helpOffersCollection.updateOne(
+        { _id: helpOfferId },
+        {
+          $set: { status },
+          $currentDate: { lastModified: true },
+        },
       );
-    }
 
-    return { id: helpOfferId, newStatus };
+    return {
+      id: helpOfferId,
+      newStatus: status,
+      foundItemsCount: matchedCount,
+      updatedItemsCount: modifiedCount,
+    };
   }
 
   public async archiveOneWithId(
     helpOfferId: string,
-  ): Promise<DeletedHelpOfferResponseType> {
+  ): Promise<DbResultOfHelpOfferArchiveType> {
     const helpOfferDbRecord = await this.getOneById(helpOfferId);
     const now = new Date();
-
-    await this.helpOffersArchiveCollection.insertOne({
+    const archivedHelpOfferDbRecord = {
       ...helpOfferDbRecord,
       archivedAt: now,
-    });
-    await this.helpOffersCollection.deleteOne({ _id: helpOfferDbRecord._id });
+    };
 
-    return { id: helpOfferId };
+    await this.helpOffersArchiveCollection.insertOne(archivedHelpOfferDbRecord);
+
+    const { deletedCount } = await this.helpOffersCollection.deleteOne({
+      _id: helpOfferDbRecord._id,
+    });
+
+    return {
+      id: helpOfferId,
+      archivedItem: archivedHelpOfferDbRecord,
+      deletedItemsCount: deletedCount,
+    };
   }
 }

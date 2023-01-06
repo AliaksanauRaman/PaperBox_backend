@@ -1,4 +1,9 @@
-import { Injectable, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 
 import {
   HELP_OFFERS_DB_SERVICE,
@@ -50,26 +55,55 @@ export class HelpOffersService {
   }
 
   public async getOneFullById(helpOfferId: string): Promise<FullHelpOfferType> {
-    const helpOfferDbRecord = await this.helpOffersDbService.getOneById(
+    const helpOfferDbRecordOrNull = await this.helpOffersDbService.getOneById(
       helpOfferId,
     );
-    const factory = new HelpOfferFactory(helpOfferDbRecord);
+
+    if (helpOfferDbRecordOrNull === null) {
+      throw new NotFoundException(
+        `Help offer with id '${helpOfferId}' is not found!`,
+      );
+    }
+
+    const factory = new HelpOfferFactory(helpOfferDbRecordOrNull);
     return factory.buildFull();
   }
 
   public async updateStatusOfOneWithId(
     helpOfferId: string,
-    newStatus: HelpOfferStatus,
+    status: HelpOfferStatus,
   ): Promise<UpdatedHelpOfferStatusResponseType> {
-    return this.helpOffersDbService.updateStatusOfOneWithId(
-      helpOfferId,
-      newStatus,
-    );
+    const { foundItemsCount, updatedItemsCount, id, newStatus } =
+      await this.helpOffersDbService.updateStatusOfOneWithId(
+        helpOfferId,
+        status,
+      );
+
+    if (foundItemsCount === 0) {
+      throw new NotFoundException(
+        `Help offer with id '${helpOfferId}' is not found!`,
+      );
+    }
+
+    if (updatedItemsCount === 0) {
+      throw new InternalServerErrorException(`No help offers were updated!`);
+    }
+
+    return { id, newStatus };
   }
 
   public async deleteOneWithId(
     helpOfferId: string,
   ): Promise<DeletedHelpOfferResponseType> {
-    return this.helpOffersDbService.archiveOneWithId(helpOfferId);
+    const { deletedItemsCount, id } =
+      await this.helpOffersDbService.archiveOneWithId(helpOfferId);
+
+    if (deletedItemsCount === 0) {
+      throw new NotFoundException(
+        `Help offer with id '${helpOfferId}' is not found!`,
+      );
+    }
+
+    return { id };
   }
 }
