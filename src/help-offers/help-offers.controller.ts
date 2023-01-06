@@ -15,7 +15,7 @@ import { HelpOfferPublicPreviewType } from './../shared/types/help-offer-public-
 import { CreateHelpOfferDto } from './../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 import { UpdateHelpOfferDto } from '../shared/dtos/update-help-offer-status.dto';
-import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { UpdatedHelpOfferStatusResponseType } from '../shared/types/updated-help-offer-status-response.type';
 import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 @Controller('help-offers')
@@ -54,7 +54,7 @@ export class HelpOffersController {
   public async updateStatusOfOne(
     @Param('helpOfferId') helpOfferId: string,
     @Body() updateHelpOfferDto: UpdateHelpOfferDto,
-  ): Promise<UpdatedHelpOfferStatusResponse> {
+  ): Promise<UpdatedHelpOfferStatusResponseType> {
     return this.helpOffersService.updateStatusOfOneWithId(
       helpOfferId,
       updateHelpOfferDto.newStatus,

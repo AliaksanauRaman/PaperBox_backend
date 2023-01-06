@@ -8,13 +8,14 @@ import { UniqueIdGeneratorService } from '../shared/services/unique-id-generator
 import { HelpOfferDbRecordType } from '../shared/types/help-offer-db-record.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
-import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { UpdatedHelpOfferStatusResponseType } from '../shared/types/updated-help-offer-status-response.type';
 import { ArchivedHelpOfferDbRecordType } from '../shared/types/archived-help-offer-db-record.type';
 import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 const HELP_OFFERS_COLLECTION_NAME = 'help-offers';
 const HELP_OFFERS_ARCHIVE_COLLECTION_NAME = 'help-offers-archive';
 
+// TODO: Remove exceptions from here
 @Injectable()
 export class HelpOffersMongodbService implements HelpOffersDbService {
   private readonly helpOffersCollection =
@@ -89,7 +90,7 @@ export class HelpOffersMongodbService implements HelpOffersDbService {
   public async updateStatusOfOneWithId(
     helpOfferId: string,
     newStatus: HelpOfferStatus,
-  ): Promise<UpdatedHelpOfferStatusResponse> {
+  ): Promise<UpdatedHelpOfferStatusResponseType> {
     const updateResult = await this.helpOffersCollection.updateOne(
       { _id: helpOfferId },
       {

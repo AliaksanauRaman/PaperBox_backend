@@ -11,7 +11,7 @@ import { HelpOfferFactory } from '../shared/factories/help-offer.factory';
 import { CreateHelpOfferDto } from '../shared/dtos/create-help-offer.dto';
 import { FullHelpOfferType } from '../shared/types/full-help-offer.type';
 import { HelpOfferStatus } from '../shared/enums/help-offer-status.enum';
-import { UpdatedHelpOfferStatusResponse } from '../shared/types/updated-help-offer-status-response.type';
+import { UpdatedHelpOfferStatusResponseType } from '../shared/types/updated-help-offer-status-response.type';
 import { DeletedHelpOfferResponseType } from '../shared/types/deleted-help-offer-response.type';
 
 @Injectable()
@@ -60,7 +60,7 @@ export class HelpOffersService {
   public async updateStatusOfOneWithId(
     helpOfferId: string,
     newStatus: HelpOfferStatus,
-  ): Promise<UpdatedHelpOfferStatusResponse> {
+  ): Promise<UpdatedHelpOfferStatusResponseType> {
     return this.helpOffersDbService.updateStatusOfOneWithId(
       helpOfferId,
       newStatus,
